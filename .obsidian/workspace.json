@@ -1,0 +1,302 @@
+{
+  "main": {
+    "id": "9ba1916ecba1b24d",
+    "type": "split",
+    "children": [
+      {
+        "id": "2c2f556eab722f0f",
+        "type": "tabs",
+        "dimension": 46,
+        "children": [
+          {
+            "id": "5af51b673c0a1070",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Foundational Concepts.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Foundational Concepts"
+            }
+          },
+          {
+            "id": "703bfef44f84966b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Project Proposal.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Project Proposal"
+            }
+          }
+        ],
+        "currentTab": 1
+      },
+      {
+        "id": "93a74faf023c5253",
+        "type": "tabs",
+        "dimension": 54,
+        "children": [
+          {
+            "id": "030801179655632b",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "00_Literature/Paraguayan Wildfires/Harrison_2021_Environ._Res._Lett._16_125008.pdf",
+                "page": 6,
+                "left": -15,
+                "top": 203,
+                "zoom": 1.0570655825829862
+              },
+              "icon": "lucide-file-text",
+              "title": "Harrison_2021_Environ._Res._Lett._16_125008"
+            }
+          },
+          {
+            "id": "acdb7d2769c9659c",
+            "type": "leaf",
+            "dimension": 50,
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "00_Literature/Phase 1/05_Conceptual_Clarity_Fire_Science_Toy_opazo.pdf",
+                "page": 1,
+                "left": -15,
+                "top": 845,
+                "zoom": 1.0570726856113803
+              },
+              "icon": "lucide-file-text",
+              "title": "05_Conceptual_Clarity_Fire_Science_Toy_opazo"
+            }
+          },
+          {
+            "id": "f7fa4a28eb03f992",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "00_Literature/Paraguayan Wildfires/03_Spatiotemporal_analysis_of_wildfires.pdf",
+                "page": 2,
+                "left": -14,
+                "top": 746,
+                "zoom": 1.0570726838356115
+              },
+              "icon": "lucide-file-text",
+              "title": "03_Spatiotemporal_analysis_of_wildfires"
+            }
+          },
+          {
+            "id": "25a00f594d33a9e0",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "00_Literature/Phase 1/00_Wildfire_Risk_Modeling_Oliviera.pdf",
+                "page": 1,
+                "left": -15,
+                "top": 578,
+                "zoom": 1.0277110421161457
+              },
+              "icon": "lucide-file-text",
+              "title": "00_Wildfire_Risk_Modeling_Oliviera"
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "b393db70858ebc79",
+    "type": "split",
+    "children": [
+      {
+        "id": "49b98c001e67b0f5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a5fc75ec66261896",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "fbfa26cfede46aa9",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "4e1010f5024550e8",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 225.5
+  },
+  "right": {
+    "id": "f9d310abb22d2d75",
+    "type": "split",
+    "children": [
+      {
+        "id": "7502388610a2863b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b2720b135f523aad",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Research Overview.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Research Overview"
+            }
+          },
+          {
+            "id": "a13a59d6b0c59bf3",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Research Overview.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Research Overview"
+            }
+          },
+          {
+            "id": "a0eff46da02199a2",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "9323685e3d42a47d",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "24f11f0bc7dad897",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Research Overview.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Research Overview"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
+      "obsidian-kanban:Create new board": false,
+      "pdf-plus:PDF++: Toggle auto-copy": false,
+      "pdf-plus:PDF++: Toggle auto-focus": false,
+      "pdf-plus:PDF++: Toggle auto-paste": false
+    }
+  },
+  "active": "703bfef44f84966b",
+  "lastOpenFiles": [
+    "Research Overview.md",
+    "00_Literature/Paraguayan Wildfires/17_Fires_in_the_Chaco.pdf",
+    "Foundational Concepts.md",
+    "00_Literature/Paraguayan Wildfires/Harrison_2021_Environ._Res._Lett._16_125008.pdf",
+    "00_Literature/Paraguayan Wildfires/05_Incendios-forestales-en-Paraguay.pdf",
+    "00_Literature/Paraguayan Wildfires/04_Review_Wildfire_accross_the_chaco.pdf",
+    "00_Literature/Paraguayan Wildfires/03_Spatiotemporal_analysis_of_wildfires.pdf",
+    "Project Proposal.md",
+    "00_Literature/Phase 1/00_Wildfire_Risk_Modeling_Oliviera.pdf",
+    "00_Literature/Paraguayan Wildfires/08_Fire_Regime_Paraguay.pdf",
+    "00_Literature/Phase 1/05_Conceptual_Clarity_Fire_Science_Toy_opazo.pdf",
+    "00_Literature/Foundational/Fire_in_Earth_System.pdf",
+    "00_Literature/Phase 1/03_Risk_Analysis_MCDA_Riviere.pdf",
+    "Model design.md",
+    "Untitled.md",
+    "Data Pipeline desing.md",
+    "Concept flow.canvas",
+    "Work plan.md",
+    "01_Images/01_wildfire_risk_framework.png",
+    "00_Literature/Phase.md"
+  ]
+}
