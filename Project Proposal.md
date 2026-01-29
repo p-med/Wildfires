@@ -19,8 +19,13 @@
 	- Run Monte Carlo simulations to asses uncertainties associated with AHP weights
 	- Validate the model against FIRMS fire data
 
-**Wildfire Impact**
-Wildfires are understood to be a recurrent earth system process contributing to the delineation of ecological boundaries through fire regimes, and atmospheric dynamics through the release of carbon ([[Fire_in_Earth_System.pdf#page=2&selection=76,0,81,13&color=yellow|1]], [[Harrison_2021_Environ._Res._Lett._16_125008.pdf#page=3&selection=190,7,225,6&color=yellow|2]]). Most recently, anthropogenic driven land use change and climate change have altered these dynamics through ecological fragmentation, increased ignition sources, and prolonged extreme weather events ([[Harrison_2021_Environ._Res._Lett._16_125008.pdf#page=8&selection=60,14,106,6&color=yellow|2]], [[05_Conceptual_Clarity_Fire_Science_Toy_opazo.pdf#page=2&selection=123,0,152,70&color=yellow|3]], [[03_Spatiotemporal_analysis_of_wildfires.pdf#page=2&selection=56,0,89,2&color=yellow|4]]). 
+**Wildfire in Earth Systems, and its effects**
+Wildfires are understood to be a recurrent earth system process contributing to the delineation of ecological boundaries through fire regimes, and atmospheric dynamics through the release of carbon ([[Fire_in_Earth_System.pdf#page=2&selection=76,0,81,13&color=yellow|1]], [[Harrison_2021_Environ._Res._Lett._16_125008.pdf#page=3&selection=190,7,225,6&color=yellow|2]]). 
+
+Most recently, anthropogenic driven land use change and climate change have altered these dynamics through ecological fragmentation, increased ignition sources, and prolonged extreme weather events ([[Harrison_2021_Environ._Res._Lett._16_125008.pdf#page=8&selection=60,14,106,6&color=yellow|2]], [[05_Conceptual_Clarity_Fire_Science_Toy_opazo.pdf#page=2&selection=123,0,152,70&color=yellow|3]], [[03_Spatiotemporal_analysis_of_wildfires.pdf#page=2&selection=56,0,89,2&color=yellow|4]]). 
+
+Moreover, wildfire impacts range from economic, ecological, and social as they affect infrastructure, regional economies, local production, land and property damage, and related health issues ([[Risk Analysis - 2023 - Kim - Analyzing indirect economic impacts of wildfire damages on regional economies.pdf#page=1&selection=60,33,94,40&color=yellow|5]]).
+
 # Study Area
 # Data
 # Methods
@@ -31,7 +36,8 @@ Wildfires are understood to be a recurrent earth system process contributing to 
 2. [Understanding and modelling wildfire regimes](00_Literature/Paraguayan Wildfires/17_Fires_in_the_Chaco.pdf)
 3. [Conceptual Clarity in Fire Science](00_Literature/Phase 1/05_Conceptual_Clarity_Fire_Science_Toy_opazo.pdf)
 4. [Spatiotemporal analysis of wildfires](00_Literature/Paraguayan Wildfires/1-s2.0-S0048969724069808-main.pdf)
-5. 
+5. [Analyzing indirect economic impacts of wildfire damages on regional economies](00_Literature/02_Wildfire_Impacts/Risk Analysis - 2023 - Kim - Analyzing indirect economic impacts of wildfire damages on regional economies.pdf)
+6. 
 # Email to Dr Resop
 
 
