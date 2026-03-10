@@ -4,63 +4,42 @@
     "type": "split",
     "children": [
       {
-        "id": "2c2f556eab722f0f",
+        "id": "93a74faf023c5253",
         "type": "tabs",
-        "dimension": 46,
         "children": [
           {
-            "id": "5af51b673c0a1070",
+            "id": "7c3046e8c938cef2",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "canvas",
               "state": {
-                "file": "Foundational Concepts.md",
-                "mode": "source",
-                "source": false
+                "file": "09_Flowcharts/Fire Risk Model.canvas",
+                "viewState": {
+                  "x": 460,
+                  "y": 360,
+                  "zoom": -0.4660214279976487
+                }
               },
-              "icon": "lucide-file",
-              "title": "Foundational Concepts"
+              "icon": "lucide-layout-dashboard",
+              "title": "Fire Risk Model"
             }
           },
           {
-            "id": "201569c600785bc7",
+            "id": "7f885fb6ad232694",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Project Proposal.md",
+                "file": "03_Sections/Literature Review.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Project Proposal"
+              "title": "Literature Review"
             }
           }
         ],
         "currentTab": 1
-      },
-      {
-        "id": "93a74faf023c5253",
-        "type": "tabs",
-        "dimension": 54,
-        "children": [
-          {
-            "id": "f7fa4a28eb03f992",
-            "type": "leaf",
-            "state": {
-              "type": "pdf",
-              "state": {
-                "file": "00_Literature/02_Wildfire_Impacts/Risk Analysis - 2023 - Kim - Analyzing indirect economic impacts of wildfire damages on regional economies.pdf",
-                "page": 1,
-                "left": -15,
-                "top": 786,
-                "zoom": 1.0570726856113803
-              },
-              "icon": "lucide-file-text",
-              "title": "Risk Analysis - 2023 - Kim - Analyzing indirect economic impacts of wildfire damages on regional economies"
-            }
-          }
-        ]
       }
     ],
     "direction": "vertical"
@@ -117,7 +96,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 225.5
+    "width": 311.5
   },
   "right": {
     "id": "f9d310abb22d2d75",
@@ -203,8 +182,19 @@
               "icon": "lucide-list",
               "title": "Outline of Research Overview"
             }
+          },
+          {
+            "id": "69c6a3f8ff4bb927",
+            "type": "leaf",
+            "state": {
+              "type": "mermaid-toolbar-view",
+              "state": {},
+              "icon": "lucide-ghost",
+              "title": "mermaid-toolbar-view"
+            }
           }
-        ]
+        ],
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
@@ -223,30 +213,48 @@
       "obsidian-kanban:Create new board": false,
       "pdf-plus:PDF++: Toggle auto-copy": false,
       "pdf-plus:PDF++: Toggle auto-focus": false,
-      "pdf-plus:PDF++: Toggle auto-paste": false
+      "pdf-plus:PDF++: Toggle auto-paste": false,
+      "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "201569c600785bc7",
+  "active": "7f885fb6ad232694",
   "lastOpenFiles": [
-    "00_Literature/02_Wildfire_Impacts/Risk Analysis - 2023 - Kim - Analyzing indirect economic impacts of wildfire damages on regional economies.pdf",
-    "Project Proposal.md",
-    "Foundational Concepts.md",
-    "00_Literature/03_Paraguayan_Wildfires/04_Review_Wildfire_accross_the_chaco.pdf",
-    "00_Literature/04_Wildfire_Modeling/00_Wildfire_Risk_Modeling_Oliviera.pdf",
-    "00_Literature/03_Paraguayan_Wildfires/17_Fires_in_the_Chaco.pdf",
-    "00_Literature/03_Paraguayan_Wildfires/08_Fire_Regime_Paraguay.pdf",
-    "00_Literature/03_Paraguayan_Wildfires/05_Incendios-forestales-en-Paraguay.pdf",
-    "00_Literature/03_Paraguayan_Wildfires/03_Spatiotemporal_analysis_of_wildfires.pdf",
-    "00_Literature/00_Foundational/Introduction_to_Wildland_fire.pdf",
+    "README.md",
+    "09_Flowcharts/Fire Risk Model.canvas",
+    "00_Literature/03_Paraguayan_Wildfires/10_Wildfires_in_Paraguay.pdf",
+    "07_Labs/~WRL0003.tmp",
+    "07_Labs/~WRD0002.tmp",
+    "07_Labs/~$b 1 - Paulo Medina.docx",
+    "07_Labs/~WRL0528.tmp",
+    "07_Labs/~WRD0520.tmp",
+    "07_Labs/~WRL2195.tmp",
+    "07_Labs/~WRD2168.tmp",
+    "00_Literature/00_Foundational/Fire_Ecology.pdf",
     "00_Literature/00_Foundational/Fire_in_Earth_System.pdf",
-    "01_Images/01_wildfire_risk_framework.png",
-    "00_Literature/04_Wildfire_Modeling/06_Cellular_Automata.pdf",
-    "Research Overview.md",
-    "Model design.md",
-    "Untitled.md",
-    "Data Pipeline desing.md",
-    "Concept flow.canvas",
+    "03_Sections/Literature Review.md",
+    "03_Sections/Data.md",
+    "08_Draft_Notes/Research Overview.md",
+    "08_Draft_Notes/Model design.md",
+    "08_Draft_Notes/Data Pipeline desing.md",
+    "08_Draft_Notes/General Concepts.md",
+    "07_Labs/Lab 1.md",
+    "04_Graphs/Fire-Risk-Model-Flowchart.png",
+    "09_Flowcharts/Concepts.canvas",
+    "09_Flowcharts/Untitled.md",
+    "Research Tasks.md",
+    "00_Literature/Foundational/Fire_in_Earth_System.pdf.md",
     "Work plan.md",
+    "01_Images/03_Wildfire_Influencing_factors.png",
+    "01_Images/02_Fire_Traingles.png",
+    "01_Images/Fire_Triangles.png",
+    "01_Images/Screenshot 2026-02-21 065629.png",
+    "00_Literature/02_Wildfire_Impacts/Risk.md",
+    "02_Maps/Wildfire_Research_Maps/Index/Wildfire_Research_Maps_index/Thumbnail/525118630.jpg",
+    "02_Maps/Wildfire_Research_Maps/Index/Wildfire_Research_Maps_index/Thumbnail/1331303659.jpg",
+    "02_Maps/Wildfire_Research_Maps/Index/Wildfire_Research_Maps_index/Thumbnail/771203865.jpg",
+    "02_Maps/Wildfire_Research_Maps/Index/Wildfire_Research_Maps_index/Thumbnail/-252096113.jpg",
+    "02_Maps/Wildfire_Research_Maps/Index/Wildfire_Research_Maps_index/Thumbnail/-2143245391.jpg",
+    "Untitled.md",
     "00_Literature/Phase.md"
   ]
 }
