@@ -4,28 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "93a74faf023c5253",
+        "id": "9fa2bd176f45f883",
         "type": "tabs",
         "children": [
           {
-            "id": "7c3046e8c938cef2",
-            "type": "leaf",
-            "state": {
-              "type": "canvas",
-              "state": {
-                "file": "09_Flowcharts/Fire Risk Model.canvas",
-                "viewState": {
-                  "x": 460,
-                  "y": 360,
-                  "zoom": -0.4660214279976487
-                }
-              },
-              "icon": "lucide-layout-dashboard",
-              "title": "Fire Risk Model"
-            }
-          },
-          {
-            "id": "7f885fb6ad232694",
+            "id": "c0df9a5d3fd45497",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -38,8 +21,110 @@
               "title": "Literature Review"
             }
           }
+        ]
+      },
+      {
+        "id": "88c3694a502b7948",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "15c5109922946672",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "00_Literature/00_Foundational/Fire_in_Earth_System.pdf",
+                "page": 1,
+                "left": -21,
+                "top": 759,
+                "zoom": 0.7032828282828283
+              },
+              "icon": "lucide-file-text",
+              "title": "Fire_in_Earth_System"
+            }
+          },
+          {
+            "id": "f56bfa49a114bcfe",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "00_Literature/03_Paraguayan_Wildfires/Harrison_2021_Environ._Res._Lett._16_125008.pdf",
+                "page": 3,
+                "left": -21,
+                "top": 458,
+                "zoom": 0.7017705953500875
+              },
+              "icon": "lucide-file-text",
+              "title": "Harrison_2021_Environ._Res._Lett._16_125008"
+            }
+          },
+          {
+            "id": "792a43e2970cc29a",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "00_Literature/02_Wildfire_Impacts/Wildfire_as_a_hydrological_Shakesby.pdf",
+                "page": 1,
+                "left": -4,
+                "top": 747,
+                "zoom": 0.7679227941176472
+              },
+              "icon": "lucide-file-text",
+              "title": "Wildfire_as_a_hydrological_Shakesby"
+            }
+          },
+          {
+            "id": "4443ff4971f90d10",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "00_Literature/00_Foundational/Fire_Ecology.pdf",
+                "page": 74,
+                "left": -13,
+                "top": 272,
+                "zoom": 1.1654564315352698
+              },
+              "icon": "lucide-file-text",
+              "title": "Fire_Ecology"
+            }
+          },
+          {
+            "id": "6a5b120ed3b5b9b3",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "00_Literature/00_Foundational/The_Dilemma_of_Wildfire_Definition.pdf",
+                "page": 8,
+                "left": -16,
+                "top": 459,
+                "zoom": 0.9437052716460035
+              },
+              "icon": "lucide-file-text",
+              "title": "The_Dilemma_of_Wildfire_Definition"
+            }
+          },
+          {
+            "id": "ef6b98e098c2851b",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "00_Literature/00_Foundational/Introduction_to_Wildland_fire.pdf",
+                "page": 29,
+                "left": -22,
+                "top": 392,
+                "zoom": 0.6868031111683333
+              },
+              "icon": "lucide-file-text",
+              "title": "Introduction_to_Wildland_fire"
+            }
+          }
         ],
-        "currentTab": 1
+        "currentTab": 4
       }
     ],
     "direction": "vertical"
@@ -96,7 +181,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 311.5
+    "width": 200
   },
   "right": {
     "id": "f9d310abb22d2d75",
@@ -217,27 +302,28 @@
       "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "7f885fb6ad232694",
+  "active": "c0df9a5d3fd45497",
   "lastOpenFiles": [
-    "README.md",
-    "09_Flowcharts/Fire Risk Model.canvas",
-    "00_Literature/03_Paraguayan_Wildfires/10_Wildfires_in_Paraguay.pdf",
-    "07_Labs/~WRL0003.tmp",
-    "07_Labs/~WRD0002.tmp",
-    "07_Labs/~$b 1 - Paulo Medina.docx",
-    "07_Labs/~WRL0528.tmp",
-    "07_Labs/~WRD0520.tmp",
-    "07_Labs/~WRL2195.tmp",
-    "07_Labs/~WRD2168.tmp",
-    "00_Literature/00_Foundational/Fire_Ecology.pdf",
-    "00_Literature/00_Foundational/Fire_in_Earth_System.pdf",
+    "10_Draft/~WRL2819.tmp",
+    "10_Draft/~WRD2792.tmp",
+    "00_Literature/00_Foundational/The_Dilemma_of_Wildfire_Definition.pdf",
+    "00_Literature/00_Foundational/Introduction_to_Wildland_fire.pdf",
     "03_Sections/Literature Review.md",
+    "10_Draft/~WRL1009.tmp",
+    "10_Draft/~WRD0986.tmp",
+    "00_Literature/00_Foundational/Fire_Ecology.pdf",
+    "00_Literature/02_Wildfire_Impacts/Wildfire_as_a_hydrological_Shakesby.pdf",
+    "00_Literature/03_Paraguayan_Wildfires/Harrison_2021_Environ._Res._Lett._16_125008.pdf",
+    "00_Literature/00_Foundational/Fire_in_Earth_System.pdf",
     "03_Sections/Data.md",
+    "07_Labs/Lab 1.md",
+    "10_Draft/~WRL3228.tmp",
+    "09_Flowcharts/Fire Risk Model.canvas",
+    "README.md",
     "08_Draft_Notes/Research Overview.md",
     "08_Draft_Notes/Model design.md",
     "08_Draft_Notes/Data Pipeline desing.md",
     "08_Draft_Notes/General Concepts.md",
-    "07_Labs/Lab 1.md",
     "04_Graphs/Fire-Risk-Model-Flowchart.png",
     "09_Flowcharts/Concepts.canvas",
     "09_Flowcharts/Untitled.md",
