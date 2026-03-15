@@ -133,26 +133,15 @@
 			"color":"3"
 		},
 		{
-			"id":"3d17ed4256e12f29",
+			"id":"0770538c3834fc8b",
 			"type":"text",
-			"text":"Fire History<br/>MODIS Collection 6.1<br/>VIIRS VNP64A1",
-			"styleAttributes":{"textAlign":"center","shape":"document"},
-			"x":-440,
-			"y":460,
+			"text":"##### Exposure Calculation",
+			"styleAttributes":{"textAlign":"center","shape":"predefined-process"},
+			"x":70,
+			"y":390,
 			"width":400,
-			"height":100,
-			"color":"3"
-		},
-		{
-			"id":"1e324f4fda55e6cf",
-			"type":"text",
-			"text":"HVA Data<br/>Communities, Forests<br/>Infrastructure",
-			"styleAttributes":{"textAlign":"center","shape":"document"},
-			"x":-440,
-			"y":580,
-			"width":400,
-			"height":100,
-			"color":"3"
+			"height":70,
+			"color":"#12848c"
 		},
 		{
 			"id":"8c6820347b23235f",
@@ -199,17 +188,6 @@
 			"color":"#aa0909"
 		},
 		{
-			"id":"0770538c3834fc8b",
-			"type":"text",
-			"text":"##### Exposure Calculation",
-			"styleAttributes":{"textAlign":"center","shape":"predefined-process"},
-			"x":70,
-			"y":390,
-			"width":400,
-			"height":70,
-			"color":"#12848c"
-		},
-		{
 			"id":"9577fb34a525a500",
 			"type":"text",
 			"text":"##### Sensitivity Calculation",
@@ -234,13 +212,46 @@
 		{
 			"id":"ffa99b1b80e8519f",
 			"type":"text",
-			"text":"##### Adaptive Calculation",
+			"text":"##### Adaptive Capacity Calculation",
 			"styleAttributes":{"textAlign":"center","shape":"predefined-process"},
 			"x":70,
 			"y":595,
 			"width":400,
 			"height":70,
 			"color":"#12848c"
+		},
+		{
+			"id":"bba5e80dd4629fd0",
+			"type":"text",
+			"text":"##### Random Forest Ignition Model\n\n- TERRA: Morning pass, better for hotspot capture in the US\n- Aqua: Afternoon overapss.\n- After 2003, both datasets are stable.\n- CSV: Monthly data has day/time for hotspot. Check Terra v Aqua, day/time\n- ",
+			"styleAttributes":{"textAlign":"center","shape":"predefined-process"},
+			"x":110,
+			"y":-62,
+			"width":400,
+			"height":85,
+			"color":"#8a0000"
+		},
+		{
+			"id":"3d17ed4256e12f29",
+			"type":"text",
+			"text":"Fire History<br/>MODIS Collection 6.1<br/>VIIRS VNP64A1",
+			"styleAttributes":{"textAlign":"center","shape":"document"},
+			"x":-440,
+			"y":460,
+			"width":400,
+			"height":100,
+			"color":"3"
+		},
+		{
+			"id":"1e324f4fda55e6cf",
+			"type":"text",
+			"text":"HVA Data<br/>Communities, Forests<br/>Infrastructure",
+			"styleAttributes":{"textAlign":"center","shape":"document"},
+			"x":-440,
+			"y":580,
+			"width":400,
+			"height":100,
+			"color":"3"
 		},
 		{
 			"id":"c4c2c9fc489c40a4",
@@ -322,17 +333,6 @@
 			"width":550,
 			"height":80,
 			"color":"#be9219"
-		},
-		{
-			"id":"bba5e80dd4629fd0",
-			"type":"text",
-			"text":"##### Random Forest Ignition Model",
-			"styleAttributes":{"textAlign":"center","shape":"predefined-process"},
-			"x":110,
-			"y":-62,
-			"width":400,
-			"height":85,
-			"color":"#8a0000"
 		}
 	],
 	"edges":[

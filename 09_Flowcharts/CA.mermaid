@@ -1,0 +1,41 @@
+flowchart TD
+    A["🔥 Select candidate fires<br>FIRMS VIIRS clustering"]
+
+    A --> B["🛰️ Extract observed burn perimeters<br>Sentinel-2 dNBR — defines your domain"]
+    A --> C["🗂️ Prepare ancillary rasters<br>Slope · NDVI · land cover · fuel type"]
+
+    B --> D["📐 Set CA grid extent & cell size<br>Clip to burn scar bounding box"]
+    C --> E["🔧 Clip & resample all rasters<br>ArcPy snap to master grid"]
+    D --> E
+
+    B --> F["💨 Extract ERA5 wind series<br>Hourly vectors for fire period"]
+
+    E --> G["⚙️ Initialize CA grid<br>NumPy arrays — state · mask · covariates"]
+    F --> G
+
+    G --> H["📋 Define transition rules<br>Fuel weight · wind kernel · slope bias · NDVI"]
+
+    H --> I["▶️ Run simulation<br>Monte Carlo ensemble — NumPy step loop"]
+
+    I --> J{"📊 Compare to observed perimeter<br>Figure of Merit · Sørensen–Dice"}
+
+    J -- Poor fit --> K["🎛️ Calibrate parameters<br>Adjust rule weights & spread kernel"]
+    K --> I
+
+    J -- Acceptable fit --> L["✅ Validate on held-out fire<br>Independent event, no re-fitting"]
+
+    L --> M["📦 Final model<br>Document parameters & metrics"]
+
+    style A fill:#FAEEDA,stroke:#BA7517,color:#412402
+    style B fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+    style C fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+    style D fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style E fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style F fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style G fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style H fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style I fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style J fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+    style K fill:#FAEEDA,stroke:#BA7517,color:#412402
+    style L fill:#EAF3DE,stroke:#3B6D11,color:#173404
+    style M fill:#EAF3DE,stroke:#3B6D11,color:#173404
