@@ -8,3 +8,5 @@
 # Obsidian files
 /.obsidian
 
+# Large files
+/05_Notebooks/01_Data
