@@ -65,6 +65,7 @@ Chaco Wildfire Spread Model - Paulo Medina
 import numpy as np
 import pandas as pd
 import random
+import math
 
 # Initialize state grid
 # -------------------------------------------------------------------------------
@@ -73,7 +74,7 @@ import random
 # state[i,j] = NON_COMBUSTIBLE where Ks[i,j] = 0
 # state[i,j] = UNBURNED elsewhere
 def initialize_state_grid(ignition, Ks):
-    state = np.full(ignition.shape, 0, dtype=np.int8)
+    state = np.full(ignition.shape, 0, dtype=np.int8) # Start with all UNBURNED
     state[ignition == 1] = 1  # BURNING
     state[Ks == 0] = -1  # NON_COMBUSTIBLE
     return state
@@ -89,22 +90,119 @@ def get_weather_values(weather_data, current_time):
     current_weather_mask = weather_data['timestamp'] == current_hour
     current_weather = weather_data[current_weather_mask].iloc[0]
     return current_weather
+
+# Calculate adaptive time step based on current conditions
+# -------------------------------------------------------------------------------
+def calculate_time_step(weather_values,ca_data, R0, m, Kr, c1, a_s, L):
+        # Δt = m × (L / Rmax)
+        # Rmax = max possible spread rate = R0 × max(Kφ) × max(Kθ) × max(Ks) × Kr
+        
+        # max(Kφ)
+        wind_factor = math.exp(np.max(weather_values['wind_speed']) * c1)
+        
+        # max(Kθ) = 1 (when spread direction perfectly aligned with wind)
+        max_slope = np.radians(np.max(ca_data['slope']))
+        max_K0 = np.exp(a_s * max_slope)  # max(Ks)
+        
+        # max(Ks) = 1 max fuel type
+        max_Ks = 1
+        
+        # Calculate Rmax        
+        Rmax = R0 * wind_factor * max_K0 * max_Ks * Kr
+        
+        # Calculate delta T
+        delta_t = m * (L/Rmax)
+        return delta_t
+
+# Get burning cells
+# -------------------------------------------------------------------------------
+# Returns list of (row, col) tuples where state == BURNING
+def get_burning_cell_indices(state):
+    ignitions = np.argwhere(state == 1)
+    return [tuple(idx) for idx in ignitions] # Return a list of tuples of the indices
     
+# Calculate spread probability from burning cell to neighbor
+# -------------------------------------------------------------------------------
+def calculate_spread_probability(from_cell, to_cell, direction, ca_data, weather, R0, Kr, c1, c2, a_s, delta_t):
+    # R = R0 × Kφ × Kθ × Ks × Kr
+    # p_spread = f(R, distance, Δt)
+    # Unpack parameters
+    i, j = from_cell
+    ni, nj = to_cell
+    di, dj = direction
+    
+    # -------------------------------------------------------------
+    # Wind factor
+    # Kφ = exp[V × (c1 + c2 × (cos(θ) - 1))]
+    # - V = wind speed at current time step (m/s)
+    # - θ = angle between wind direction and fire spread direction
+    # - c1 = 0.045
+    # - c2 = 0.131
+    V = weather['wind_speed']
+    spread_direction = np.atan2((nj-j), -(ni-i))
+    wind_direction = weather['wind_direction']
+    angle_diff = abs(spread_direction - wind_direction)
+    # Handle angle wrap-around (0 to 2π)
+    if angle_diff > math.pi:
+        angle_diff = 2 * math.pi - angle_diff
+    # Calculate wind factor
+    wind_factor = math.exp(V * ( c1 + c2 * (math.cos(angle_diff) - 1)))
+    
+    # -------------------------------------------------------------
+    # Slope factor
+    # Kθ = exp[as × θs]
+    # - as = 0.078
+    # - θs = slope angle in direction of fire spread (math.radians)
+    elev_from = ca_data['elevation'][i, j]      # Burning cell
+    elev_to = ca_data['elevation'][ni, nj]      # Neighbor cell
+    # Elevation difference
+    delta_elevation = elev_to - elev_from
+    # Distance (already calculated in your code)
+    if abs(di) + abs(dj) == 1:  # Adjacent
+        distance = ca_data['cell_size']
+    else:  # Diagonal
+        distance = ca_data['cell_size'] * math.sqrt(2)
+
+    # Directional slope angle (radians)
+    slope_angle = math.atan(delta_elevation / distance)
+
+    # Slope factor
+    slope_factor = math.exp(a_s * slope_angle)
+    
+    # -------------------------------------------------------------
+    # Fuel factor (from fuel type)
+    fuel_factor = ca_data['Ks'][ni, nj]  # Assuming Ks is normalized [0-1]
+        
+    # --------------------------------------------------------------
+    # Local R calculation  
+    # Base spread probability (normalized by distance)
+    base_prob = R0 * wind_factor * slope_factor * fuel_factor * Kr
+    
+    # Convert to a probability between 0 and 1 (using a logistic function)
+    p_spread = 1 - math.exp(-base_prob * delta_t / distance)
+    
+    return p_spread
+
+
+# ====================================================================
+# SIMULATION FUNCTION
+# ====================================================================
+        
 def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
     
-    # -------------------------------------------------------------------
+    # ----------------------------------------------------------------
     # INITIALIZATION
-    # -------------------------------------------------------------------
+    # ----------------------------------------------------------------
     
     # Set constants (from Rui et al. 2018 and Freire 2019)
-    R0 = 0.8 #m/min          # Base spread rate
-    m = 0.125               # Time step multiplier
-    # Δt = m * (L / Rmax)     # Adaptive time step (calculate dynamically)
-    L = 30.0                # Cell size (m)
-    c1 = 0.045              # Wind coefficient 1 (from Freire 2019)
-    c2 = 0.131              # Wind coefficient 2 (from Freire 2019)
-    a_s = 0.078              # Slope coefficient (from Freire 2019)
-    Kr = 1.0                # Time correction factor (will calibrate per event)
+    R0 = 0.8 #m/min             # Base spread rate
+    m = 0.125                   # Time step multiplier
+    # Δt = m * (L / Rmax)       # Adaptive time step (calculate dynamically)
+    L = ca_data['cell_size']    # Cell size (m)
+    c1 = 0.045                  # Wind coefficient 1 (from Freire 2019)
+    c2 = 0.131                  # Wind coefficient 2 (from Freire 2019)
+    a_s = 0.078                 # Slope coefficient (from Freire 2019)
+    Kr = 1.0                    # Time correction factor (will calibrate per event)
 
     
     # Set variables from ca_data
@@ -120,9 +218,7 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
     burn_time[state == 1] = 0  # Ignition cells burned at t=0
     
     # Calculate adaptive time step
-    delta_t = calculate_time_step(ca_data, R0, m, Kr)
-        # Δt = m × (L / Rmax)
-        # Rmax = max possible spread rate = R0 × max(Kφ) × max(Kθ) × max(Ks) × Kr
+    delta_t = calculate_time_step(weather_values,ca_data, R0, m, Kr, c1, a_s, L)
         # Typically Δt ≈ 2-4 minutes
     
     # Fire progression history (optional, for visualization)
@@ -144,7 +240,7 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
         # Find all currently burning cells
         burning_cells = get_burning_cell_indices(state)
             # Returns list of (row, col) tuples where state == BURNING
-            
+
         # If no burning cells, fire is extinguished → STOP
         if len(burning_cells) == 0:
             print(f"Fire extinguished at time step {t}")
@@ -156,9 +252,9 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
         new_ignitions = []  # Track new cells that will ignite
         
         for (i, j) in burning_cells:
-            
+            neighbors = state[i-1:i+2, j-1:j+2]  # Get 8 neighbors (including diagonals)
             # Check all 8 neighbors
-            for (di, dj) in NEIGHBORS:
+            for (di, dj) in np.ndindex(neighbors.shape):
                 ni, nj = i + di, j + dj
                 
                 # Boundary check
@@ -166,7 +262,7 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
                     continue
                 
                 # Skip if neighbor already burned or burning
-                if state[ni, nj] != UNBURNED:
+                if state[ni, nj] != 0:  # Not UNBURNED
                     continue
                 
                 # Calculate spread probability
@@ -176,7 +272,7 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
                     direction=(di, dj),
                     ca_data=ca_data,
                     weather=weather_now,
-                    R0=R0, Kr=Kr, c1=c1, c2=c2, as=a_s
+                    R0=R0, Kr=Kr, c1=c1, c2=c2, a_s=a_s, delta_t=delta_t
                 )
                 
                 # Stochastic ignition
@@ -194,11 +290,11 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
                 for (ni, nj) in new_ignitions:
                     
                     # Calculate spread direction
-                    spread_direction = calculate_angle(from_cell=(i,j), to_cell=(ni,nj))
+                    spread_direction = np.atan2((nj-j), -(ni-i))
                     
                     # Check if spread is aligned with wind
                     angle_diff = abs(spread_direction - weather_now['wind_direction'])
-                    angle_diff = min(angle_diff, 2π - angle_diff)  # Wrap around
+                    angle_diff = min(angle_diff, 2*np.pi - angle_diff)  # Wrap around
                     
                     if angle_diff < SPOTTING_ANGLE:
                         

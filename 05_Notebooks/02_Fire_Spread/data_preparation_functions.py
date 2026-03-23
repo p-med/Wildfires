@@ -27,7 +27,7 @@ def load_topography(srtm_path):
             'shape': elevation.shape,
             'nodata': src.nodata
         }
-    
+        
     # Handle nodata (if any)
     if meta['nodata'] is not None:
         elevation = np.where(elevation == meta['nodata'], np.nan, elevation)
