@@ -93,26 +93,170 @@ def get_weather_values(weather_data, current_time):
 
 # Calculate adaptive time step based on current conditions
 # -------------------------------------------------------------------------------
-def calculate_time_step(weather_values,ca_data, R0, m, Kr, c1, a_s, L):
-        # Δt = m × (L / Rmax)
-        # Rmax = max possible spread rate = R0 × max(Kφ) × max(Kθ) × max(Ks) × Kr
+# def calculate_time_step(weather_values,ca_data, R0, m, Kr, c1, a_s, L):
+#         # Δt = m × (L / Rmax)
+#         # Rmax = max possible spread rate = R0 × max(Kφ) × max(Kθ) × max(Ks) × Kr
         
-        # max(Kφ)
-        wind_factor = math.exp(np.max(weather_values['wind_speed']) * c1)
+#         # max(Kφ)
+#         wind_factor = math.exp(np.max(weather_values['wind_speed']) * c1)
         
-        # max(Kθ) = 1 (when spread direction perfectly aligned with wind)
-        max_slope = np.radians(np.max(ca_data['slope']))
-        max_K0 = np.exp(a_s * max_slope)  # max(Ks)
+#         # max(Kθ) = 1 (when spread direction perfectly aligned with wind)
+#         max_slope = np.radians(np.max(ca_data['slope']))
+#         max_K0 = np.exp(a_s * max_slope)  # max(Ks)
         
-        # max(Ks) = 1 max fuel type
-        max_Ks = 1
+#         # max(Ks) = 1 max fuel type
+#         max_Ks = 1
         
-        # Calculate Rmax        
-        Rmax = R0 * wind_factor * max_K0 * max_Ks * Kr
+#         # Calculate Rmax        
+#         Rmax = R0 * wind_factor * max_K0 * max_Ks * Kr
         
-        # Calculate delta T
-        delta_t = m * (L/Rmax)
-        return delta_t
+#         # Calculate delta T
+#         delta_t = m * (L/Rmax)
+#         return delta_t
+
+def calculate_time_step(weather_values, ca_data, R0, m, Kr, c1, a_s, L):
+    """
+    Calculate adaptive time step based on REASONABLE maximum conditions.
+    
+    FIXED: Uses 90th percentile instead of absolute maximum to avoid
+    extreme outliers from distant parts of the study area.
+    """
+    # Use 90th percentile wind speed instead of absolute max
+    wind_p90 = np.percentile(weather_values['wind_speed'], 90)
+    wind_factor = math.exp(wind_p90 * c1)
+    
+    # Use reasonable max slope (30 degrees) instead of data max
+    # 30 degrees is already quite steep for fire spread
+    reasonable_max_slope = np.radians(30)  
+    max_K0 = np.exp(a_s * reasonable_max_slope)
+    
+    # max(Ks) = 1 (grassland)
+    max_Ks = 1
+    
+    # Calculate Rmax        
+    Rmax = R0 * wind_factor * max_K0 * max_Ks * Kr
+    
+    # Calculate delta_t
+    delta_t = m * (L / Rmax)
+    
+    print(f"  Adaptive time step calculation:")
+    print(f"    Wind (90th percentile): {wind_p90:.2f} m/s")
+    print(f"    Wind factor: {wind_factor:.3f}")
+    print(f"    Slope factor: {max_K0:.3f}")
+    print(f"    Rmax: {Rmax:.3f} m/min")
+    print(f"    Delta_t: {delta_t:.3f} minutes ({delta_t*60:.1f} seconds)")
+    
+    return delta_t
+
+# Calculate spotting distance
+# -------------------------------------------------------------------------------
+def calculate_spotting_distance(wind_speed, cell_size):
+    # Constants
+    spotting_threshold = 8.0 #m/s
+    distance_coefficient = 50 # meters per m/s above threshold
+    
+    # Excess wind speed above threshold
+    excess_wind = wind_speed - spotting_threshold
+    if excess_wind <= 0:
+        return 0
+    
+    # Linear relationship
+    spotting_distance_meters = distance_coefficient * excess_wind
+    
+    # Convert to number of cells
+    spotting_distance_cells = round(spotting_distance_meters / cell_size)
+    
+    # Safety cap
+    max_spotting = 50 # cells
+    spotting_distance_cells = min(spotting_distance_cells, max_spotting)
+    
+    return spotting_distance_cells
+
+# Calculate cells ignited along wind vector (Freire)
+# -------------------------------------------------------------------------------
+def trace_wind_vector(start, direction, distance, ca_data, state):
+    """
+    Traces a path along the wind direction and returns cells to ignite
+    
+    Parameters:
+        start: (row, col) - starting burning cell
+        direction: wind direction in radians (0=North, clockwise)
+        distance: how far to trace (in number of cells)
+        ca_data: dictionary with 'state', 'Ks', 'shape', etc.
+    
+    Returns:
+        List of (row, col) tuples representing cells to spot-ignite
+    """
+    # Unpacl parameters
+    start_row, start_col = start # Starting cell
+    rows, cols = ca_data['shape'] # Grid dimensions
+    
+    # Initialize list of spotted cells
+    spotted_cells = []
+    
+    # If no trace found
+    if distance <= 0:
+        return spotted_cells
+    
+    # ---------------------------------------------------------------
+    # Calculate wind vector components
+    # ---------------------------------------------------------------
+    # Convert wind direction to movement in grid space
+    # Remember: row increases downward (South), col increases rightward (East)
+    # Wind direction: 0 = North, π/2 = East, π = South, 3π/2 = West
+    
+    delta_row = distance * math.cos(direction)
+    delta_col = distance * math.sin(direction)
+    
+    # ---------------------------------------------------------------
+    # Trace along the vector with small steps
+    # ---------------------------------------------------------------
+    
+    steps = distance * 2
+    
+    for step in range(steps):
+        
+        # Calculate fractional profess along vector
+        progress = step / steps
+        
+        # Calculate current position along the vector
+        current_row = start_row + (delta_row * progress)
+        current_col = start_col + (delta_col * progress)
+        
+        # Convert to cell indices (round to nearest integer)
+        cell_row = round(current_row)
+        cell_col = round(current_col)
+        
+        # ---------------------------------------------------------------
+        # Boundary check
+        # --------------------------------------------------------------- 
+        if cell_row < 0 or cell_row >= rows:
+            continue
+        if cell_col < 0 or cell_col >= cols:
+            continue
+                
+        # --------------------------------------------------------------
+        # Check if cell is valid for spotting
+        # ---------------------------------------------------------------
+        
+        current_state = state[cell_row, cell_col]
+        current_fuel = ca_data['Ks'][cell_row, cell_col]
+        
+        # Skip if already burned, burning, or non-combustible
+        if current_state != 0: # Not UNBURNED
+            continue
+        # Skip if no fuel
+        if current_fuel == 0:
+            continue
+        
+        # If valid, add to spotted cells
+        cell_tuple = (cell_row, cell_col)
+        if cell_tuple not in spotted_cells:
+            spotted_cells.append(cell_tuple)
+            
+    return spotted_cells
+        
+        
 
 # Get burning cells
 # -------------------------------------------------------------------------------
@@ -196,13 +340,18 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
     
     # Set constants (from Rui et al. 2018 and Freire 2019)
     R0 = 0.8 #m/min             # Base spread rate
-    m = 0.125                   # Time step multiplier
+    m = 0.5 #0.125                   # Time step multiplier
     # Δt = m * (L / Rmax)       # Adaptive time step (calculate dynamically)
     L = ca_data['cell_size']    # Cell size (m)
     c1 = 0.045                  # Wind coefficient 1 (from Freire 2019)
     c2 = 0.131                  # Wind coefficient 2 (from Freire 2019)
     a_s = 0.078                 # Slope coefficient (from Freire 2019)
-    Kr = 1.0                    # Time correction factor (will calibrate per event)
+    neighbors = [
+    (-1, -1), (-1, 0), (-1, 1),
+    (0, -1),           (0, 1),
+    (1, -1),  (1, 0),  (1, 1)
+    ] # Moore neighborhood (8 neighbors)
+
 
     
     # Set variables from ca_data
@@ -218,11 +367,11 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
     burn_time[state == 1] = 0  # Ignition cells burned at t=0
     
     # Calculate adaptive time step
-    delta_t = calculate_time_step(weather_values,ca_data, R0, m, Kr, c1, a_s, L)
-        # Typically Δt ≈ 2-4 minutes
+    #delta_t = calculate_time_step(weather_values,ca_data, R0, m, Kr, c1, a_s, L)
+    delta_t = 2.0 # Typically Δt ≈ 2-4 minutes
     
     # Fire progression history (optional, for visualization)
-    fire_progression = []
+    # fire_progression = []
     
     # -------------------------------------------------------------------
     # TIME STEPPING LOOP
@@ -230,7 +379,7 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
     for t in range(max_time_steps):
         
         # Record current state
-        fire_progression.append(state.copy())
+        # fire_progression.append(state.copy())
         
         # Get current weather conditions
         current_time = ignition_time + pd.Timedelta(minutes=t * delta_t)
@@ -240,6 +389,7 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
         # Find all currently burning cells
         burning_cells = get_burning_cell_indices(state)
             # Returns list of (row, col) tuples where state == BURNING
+        print(f"t={t}: Burning cells: {len(burning_cells)}, Time: {current_time}")
 
         # If no burning cells, fire is extinguished → STOP
         if len(burning_cells) == 0:
@@ -252,9 +402,9 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
         new_ignitions = []  # Track new cells that will ignite
         
         for (i, j) in burning_cells:
-            neighbors = state[i-1:i+2, j-1:j+2]  # Get 8 neighbors (including diagonals)
+            #neighbors = state[i-1:i+2, j-1:j+2]  # Get 8 neighbors (including diagonals)
             # Check all 8 neighbors
-            for (di, dj) in np.ndindex(neighbors.shape):
+            for (di, dj) in neighbors:
                 ni, nj = i + di, j + dj
                 
                 # Boundary check
@@ -278,11 +428,14 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
                 # Stochastic ignition
                 if random.uniform(0, 1) < p_spread:
                     new_ignitions.append((ni, nj))
+                    
+        if t < 10:  # Monitor first 10 timesteps
+            print(f"  → New ignitions this timestep: {len(new_ignitions)}")
         
         # -------------------------------------------------------------------
         # WIND-DRIVEN SPOTTING (Freire Enhancement)
         # -------------------------------------------------------------------
-        if weather_now['wind_speed'] > SPOTTING_THRESHOLD:
+        if weather_now['wind_speed'] > 8.0: # Spotting threshold (m/s) based on Freire 2019
             
             for (i, j) in burning_cells:
                 
@@ -296,10 +449,10 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
                     angle_diff = abs(spread_direction - weather_now['wind_direction'])
                     angle_diff = min(angle_diff, 2*np.pi - angle_diff)  # Wrap around
                     
-                    if angle_diff < SPOTTING_ANGLE:
+                    if angle_diff < math.pi / 10: # Within spotting angle (π/10 radians) based on Freire 2019
                         
                         # Calculate spotting distance
-                        spot_distance = calculate_spotting_distance(weather_now['wind_speed'])
+                        spot_distance = calculate_spotting_distance(weather_now['wind_speed'], ca_data['cell_size'])
                             # e.g., spot_distance = int(wind_speed / 2)  [cells]
                         
                         # Ignite cells along wind vector
@@ -307,7 +460,8 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
                             start=(i, j),
                             direction=weather_now['wind_direction'],
                             distance=spot_distance,
-                            ca_data=ca_data
+                            ca_data=ca_data,
+                            state=state
                         )
                         
                         new_ignitions.extend(spotted_cells)
@@ -316,12 +470,12 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
         # UPDATE CELL STATES
         # -------------------------------------------------------------------
         # Burning → Burned
-        state[state == BURNING] = BURNED
+        state[state == 1] = 2  # All currently burning cells become burned
         
         # New ignitions → Burning
         for (ni, nj) in set(new_ignitions):  # Use set to remove duplicates
-            if state[ni, nj] == UNBURNED:
-                state[ni, nj] = BURNING
+            if state[ni, nj] == 0:
+                state[ni, nj] = 1  # Ignite new cell
                 burn_time[ni, nj] = t + 1
         
         # Check for maximum time (safety break)
@@ -335,7 +489,7 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
     return {
         'burn_time': burn_time,        # When each cell burned (-1 = unburned)
         'final_state': state,          # Final cell states
-        'fire_progression': fire_progression,  # State at each time step
-        'time_step_minutes': Δt,
-        'total_burned_cells': np.sum(state == BURNED)
+        # 'fire_progression': fire_progression,  # State at each time step
+        'time_step_minutes': delta_t,
+        'total_burned_cells': np.sum(state == 2)
     }
