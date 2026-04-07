@@ -332,15 +332,15 @@ def calculate_spread_probability(from_cell, to_cell, direction, ca_data, weather
 # SIMULATION FUNCTION
 # ====================================================================
         
-def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
+def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0, R0 = 0.8, delta_t = None, m = 1):
     
     # ----------------------------------------------------------------
     # INITIALIZATION
     # ----------------------------------------------------------------
     
     # Set constants (from Rui et al. 2018 and Freire 2019)
-    R0 = 0.8 #m/min             # Base spread rate
-    m = 0.5 #0.125                   # Time step multiplier
+    #R0 = 0.8 #m/min             # Base spread rate
+    # m = 1 #0.125                   # Time step multiplier
     # Δt = m * (L / Rmax)       # Adaptive time step (calculate dynamically)
     L = ca_data['cell_size']    # Cell size (m)
     c1 = 0.045                  # Wind coefficient 1 (from Freire 2019)
@@ -367,8 +367,9 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
     burn_time[state == 1] = 0  # Ignition cells burned at t=0
     
     # Calculate adaptive time step
-    #delta_t = calculate_time_step(weather_values,ca_data, R0, m, Kr, c1, a_s, L)
-    delta_t = 2.0 # Typically Δt ≈ 2-4 minutes
+    if delta_t is None:
+        delta_t = calculate_time_step(weather_values,ca_data, R0, m, Kr, c1, a_s, L)
+    #delta_t = 2.0 # Typically Δt ≈ 2-4 minutes
     
     # Fire progression history (optional, for visualization)
     # fire_progression = []
@@ -435,36 +436,31 @@ def run_ca_simulation(ca_data, max_time_steps=1000, Kr=1.0):
         # -------------------------------------------------------------------
         # WIND-DRIVEN SPOTTING (Freire Enhancement)
         # -------------------------------------------------------------------
-        if weather_now['wind_speed'] > 8.0: # Spotting threshold (m/s) based on Freire 2019
+        if weather_now['wind_speed'] > 8.0:
+            sample_size = min(len(burning_cells), 200)
+            sampled_cells = random.sample(burning_cells, sample_size)
+            spotted_cells_all = []  # Collect all spotted cells
             
-            for (i, j) in burning_cells:
+            for (i, j) in sampled_cells:
+                # Calculate spotting distance
+                spot_distance = calculate_spotting_distance(
+                    weather_now['wind_speed'], 
+                    ca_data['cell_size']
+                )
                 
-                # Check each neighbor that just ignited
-                for (ni, nj) in new_ignitions:
-                    
-                    # Calculate spread direction
-                    spread_direction = np.atan2((nj-j), -(ni-i))
-                    
-                    # Check if spread is aligned with wind
-                    angle_diff = abs(spread_direction - weather_now['wind_direction'])
-                    angle_diff = min(angle_diff, 2*np.pi - angle_diff)  # Wrap around
-                    
-                    if angle_diff < math.pi / 10: # Within spotting angle (π/10 radians) based on Freire 2019
-                        
-                        # Calculate spotting distance
-                        spot_distance = calculate_spotting_distance(weather_now['wind_speed'], ca_data['cell_size'])
-                            # e.g., spot_distance = int(wind_speed / 2)  [cells]
-                        
-                        # Ignite cells along wind vector
-                        spotted_cells = trace_wind_vector(
-                            start=(i, j),
-                            direction=weather_now['wind_direction'],
-                            distance=spot_distance,
-                            ca_data=ca_data,
-                            state=state
-                        )
-                        
-                        new_ignitions.extend(spotted_cells)
+                # Ignite cells along wind vector from THIS burning cell
+                spotted_cells = trace_wind_vector(
+                    start=(i, j),
+                    direction=weather_now['wind_direction'],
+                    distance=spot_distance,
+                    ca_data=ca_data,
+                    state=state
+                )
+                
+                spotted_cells_all.extend(spotted_cells)
+            
+            # Add all spotted cells to new ignitions
+            new_ignitions.extend(spotted_cells_all)
         
         # -------------------------------------------------------------------
         # UPDATE CELL STATES

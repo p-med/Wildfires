@@ -16,6 +16,8 @@ import rasterio
 from rasterio.warp import reproject, Resampling
 from rasterio.transform import from_origin, Affine
 import pandas as pd
+import ee
+from datetime import datetime, timedelta
 
 # ============================================================================
 # STEP 1: INGEST TOPOGRAPHY (MASTER GRID)
@@ -144,7 +146,7 @@ MAPBIOMAS_TO_FUEL_TYPE = {
 }
 
 FUEL_TYPE_TO_KS = {
-    1: 0.04,
+    1: 0.40, # Test now
     2: 0.96,
     3: 1.00,
     4: 0.60,
@@ -667,3 +669,110 @@ def check_data_quality(ca_data):
     print(f"  Wind speed range: {ca_data['weather']['wind_speed'].min():.1f} to {ca_data['weather']['wind_speed'].max():.1f} m/s")
     
     print(f"\n{'='*80}\n")
+    
+# ============================================================================
+# UTILITY: GET WEATHER DATA
+# ============================================================================
+
+
+def get_era5_data(gdf_init, id_column, lat, lon, start_date, end_date, delta_end, delta_start, ee_project, event_id):
+    ee.Authenticate()
+    ee.Initialize(project=ee_project)
+    """
+    Extract hourly ERA5 time series for each fire event.
+    
+    Returns: Dictionary with fire_id as keys, each containing hourly DataFrame
+    """
+    
+    gdf = gdf_init[gdf_init[id_column] == event_id].copy()
+    
+    # CHECK: Ensure only one row per event (one representative point per cluster)
+    if len(gdf) > 1:
+        print(f"Warning: Event {event_id} has {len(gdf)} ignition points in cluster.")
+        print("Taking the first ignition point as representative.")
+        gdf = gdf.iloc[[0]]  # Take only the first row
+    elif len(gdf) == 0:
+        raise ValueError(f"No data found for event {event_id}")
+    
+    # Verify ERA5 band names
+    era5_bands = {
+        'temperature_2m',
+        'dewpoint_temperature_2m',
+        'u_component_of_wind_10m',
+        'v_component_of_wind_10m'
+    }
+    
+    results = {}
+    
+    # Process each fire event individually
+    for idx, row in gdf.iterrows():
+        event_id = row[id_column]
+        
+        # Get fire-specific date range (with buffer)
+        start_dt = pd.to_datetime(row[start_date]) - timedelta(days=delta_start)
+        end_dt = pd.to_datetime(row[end_date]) + timedelta(days=delta_end)
+        
+        # Create point geometry for fire centroid
+        if 'geometry' in row.index and pd.notna(row['geometry']):
+            point = ee.Geometry.Point(row['geometry'].centroid.x, row['geometry'].centroid.y)
+        elif lat is not None and lon is not None:
+            point = ee.Geometry.Point([row[lon], row[lat]])
+        else:
+            raise ValueError(f"Event {event_id}: No valid geometry or lat/lon columns provided")
+        
+        # Filter ERA5 for this fire's time window
+        era5_collection = (ee.ImageCollection('ECMWF/ERA5/HOURLY')
+            .filterDate(start_dt.strftime('%Y-%m-%d'), 
+                       end_dt.strftime('%Y-%m-%d'))
+            .select(list(era5_bands))
+        )
+        
+        # Extract time series at point location
+        def extract_hourly(image):
+            values = image.reduceRegion(
+                reducer=ee.Reducer.first(),
+                geometry=point,
+                scale=27830
+            )
+            return ee.Feature(None, values).set('system:time_start', image.get('system:time_start'))
+        
+        # Map over all images to get time series
+        time_series = era5_collection.map(extract_hourly)
+        
+        # Convert to pandas DataFrame
+        ts_list = time_series.getInfo()['features']
+        
+        hourly_data = []
+        for feature in ts_list:
+            props = feature['properties']
+            hourly_data.append({
+                'timestamp': datetime.fromtimestamp(props['system:time_start'] / 1000),
+                'temperature_2m': props.get('temperature_2m'),
+                'dewpoint_2m': props.get('dewpoint_temperature_2m'),
+                'u_wind_10m': props.get('u_component_of_wind_10m'),
+                'v_wind_10m': props.get('v_component_of_wind_10m')
+            })
+        
+        df = pd.DataFrame(hourly_data).sort_values('timestamp')
+        
+        # Calculate derived variables
+        df['temperature_c'] = df['temperature_2m'] - 273.15
+        df['dewpoint_c'] = df['dewpoint_2m'] - 273.15
+        
+        # Calculate relative humidity from dewpoint
+        df['relative_humidity'] = 100 * (
+            np.exp((17.625 * df['dewpoint_c']) / (243.04 + df['dewpoint_c'])) /
+            np.exp((17.625 * df['temperature_c']) / (243.04 + df['temperature_c']))
+        )
+        
+        # Calculate wind speed and direction
+        df['wind_speed'] = np.sqrt(df['u_wind_10m']**2 + df['v_wind_10m']**2)
+        df['wind_direction'] = (np.arctan2(df['u_wind_10m'], df['v_wind_10m']) * 180 / np.pi + 360) % 360
+        
+        # Store processed time series
+        results[event_id] = df[['timestamp', 'temperature_c', 'relative_humidity', 
+                                'wind_speed', 'wind_direction']]
+        
+        print(f"Extracted {len(df)} hourly records for event {event_id}")
+    
+    return results
