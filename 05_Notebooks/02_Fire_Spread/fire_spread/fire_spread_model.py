@@ -69,7 +69,7 @@ import math
 
 # Initialize state grid
 # -------------------------------------------------------------------------------
-# Create an initial array of zeros and then set values based on ignition and Ks:
+# Create an initial array of zeros and then set values based on ignition and constant values:
 # state[i,j] = BURNING where ignition[i,j] = 1
 # state[i,j] = NON_COMBUSTIBLE where Ks[i,j] = 0
 # state[i,j] = UNBURNED elsewhere
